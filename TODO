@@ -1,0 +1,21 @@
+- [x] create project
+- [x] create `accounts` app and mention in installed app `settings.py` it
+- [x] install rest framework and mention in installed app `settings.py` it
+- [x] to user jwt install jwt package <djangorestframework-simplejwt> <do as said in docs>
+- [x] add `corsheaders` app ad do as said in docs
+  - [x] add to app
+  - [x] add allowed host
+  - [x] add middleware 
+- [x] make custom model
+
+
+## check points 
+- [x] Auth 
+- [ ] Profile
+- [ ] Docs 
+- [ ] 
+
+
+## Issue 
+- [ ] jwt logout issue
+- [ ] email sending issue 
