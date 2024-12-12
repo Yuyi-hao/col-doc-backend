@@ -1,8 +1,9 @@
 from core.utils import response, get_tokens_for_user
+from django.utils import timezone
 from rest_framework import status
 from .models import User
 from rest_framework.decorators import api_view, permission_classes
-from .serializers import SendPasswordResetEmailSerializer, UserChangePasswordSerializer, UserLogoutSerializer, UserPasswordResetSerializer, UserRegisterSerializer, UserSerializer, UserLoginSerializer
+from .serializers import SendPasswordResetEmailSerializer, UserChangePasswordSerializer, UserLogoutSerializer, UserPasswordResetSerializer, UserRegisterSerializer, UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from core.utils import send_email
@@ -33,6 +34,8 @@ def register_user(request):
                 status_code = status.HTTP_400_BAD_REQUEST,
             )
         user = serialize.save()
+        user.last_login = timezone.now()
+        user.save(update_fields=['last_login'])
         refresh_token, access_token  = get_tokens_for_user(user)
         send_response =   response(
             message="Registration successful",
@@ -89,6 +92,8 @@ def login_user(request):
             )
 
         refresh_token, access_token  = get_tokens_for_user(user)
+        user.last_login = timezone.now()
+        user.save(update_fields=['last_login'])
         send_response =  response(
             message="Login successful",
             success=True,
@@ -109,18 +114,56 @@ def login_user(request):
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated,])
 def profile_user(request):
-    user = UserSerializer(request.user)
-    return response(
-        message='user-fetched-successfully',
-        success=True,
-        status_code=status.HTTP_200_OK,
-        content={
-            'user': user.data,
-        }
-    )
+    user = request.user
+    if request.method == 'GET':
+        return response(
+            message='user-fetched-successfully',
+            success=True,
+            status_code=status.HTTP_200_OK,
+            content={
+                'user': UserSerializer(request.user).data,
+            }
+        )
+    elif request.method == "PUT":
+        if not request.data:
+            return response(
+                message='invalid data',
+                code='empty-data',
+                success=False,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        fields = list(request.data.keys())
+        for field in fields:
+            print(getattr(user, field))
+            if hasattr(user, field) and getattr(user, field) == request.data[field]:
+                request.data.pop(field)
+        
+        print(request.data)
+
+        if not request.data:
+            return response(
+                message='No data has been changed',
+                code="invalid-data",
+                success=False,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        serialize = UserUpdateSerializer(data=request.data)
+        serialize.is_valid(raise_exception=True)
+        serialize.update(user, request.data)
+        
+        return response(
+            message='user-updated-successfully',
+            success=True,
+            status_code=status.HTTP_200_OK,
+            content={
+                'user': UserSerializer(user).data,
+            }
+        )
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated,])
@@ -177,12 +220,12 @@ def change_password_user(request):
 # FIXME: Need to fix gmail issue
 @api_view(['POST'])
 def send_password_reset_email_user(request):
-    # return response(
-    #     message="NOT IMPLEMENTED",
-    #     success=False,
-    #     code="under-development",
-    #     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-    # )
+    return response(
+        message="NOT IMPLEMENTED",
+        success=False,
+        code="under-development",
+        status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    )
     serialize = SendPasswordResetEmailSerializer(data=request.data)
     if not serialize.is_valid(raise_exception=True):
         try:
@@ -206,12 +249,12 @@ def send_password_reset_email_user(request):
 # FIXME: Need to fix the issue but ig it works
 @api_view(["POST"])
 def password_reset_user(request, uid, token):
-    # return response(
-    #     message="NOT IMPLEMENTED",
-    #     success=False,
-    #     code="under-development",
-    #     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-    # )
+    return response(
+        message="NOT IMPLEMENTED",
+        success=False,
+        code="under-development",
+        status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    )
     serialize = UserPasswordResetSerializer(data=request.data, context={'uid': uid, 'token': token})
     if not serialize.is_valid(raise_exception=True):
         try:

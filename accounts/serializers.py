@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import  RefreshToken
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'name', 'password', 'password2', 'tc', 'date_of_birth']
+        fields = ['email', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -31,7 +31,32 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'date_of_birth', 'tc']
+        exclude = ['password']
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User 
+        fields = ['name', 'nickname', 'profile_pic', 'description', 'location', 'date_of_birth']
+        extra_kwargs = {
+            'name': {'required': False},
+            'nickname': {'required': False},
+            'profile_pic': {'required': False},
+            'description': {'required': False},
+            'location': {'required': False},
+            'date_of_birth': {'required': False},
+        }
+
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError("At least one field is required to update.")
+        return attrs
+
+    def update(self, user, attrs):
+        for attr, value in attrs.items():
+            if hasattr(user, attr):
+                setattr(user, attr, value)
+        user.save()
+        return user
     
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255)
@@ -126,5 +151,3 @@ class UserPasswordResetSerializer(serializers.Serializer):
         except DjangoUnicodeDecodeError as identifier:
             PasswordResetTokenGenerator().check_token(user, token)
             raise serializers.ValidationError('Token is not Valid or Expired')
-    
-    

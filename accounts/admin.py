@@ -1,14 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
-
-
 class UserModelAdmin(BaseUserAdmin):
-    list_display = ["id", "email", "date_of_birth", "tc", "name", "is_admin", "created_at", "updated_at"]
+    list_display =  ["email", "password", "created_at", "modified_at", "is_admin"]
     list_filter = ["is_admin"]
     fieldsets = [
         ('user_credentials', {"fields": ["email", "password"]}),
-        ("Personal info", {"fields": ["name", "date_of_birth", "tc"]}),
+        ("Personal info", {"fields": ["name", "nickname", "profile_pic", "date_of_birth", "description", "location", "is_active"]}),
         ("Permissions", {"fields": ["is_admin"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -18,7 +16,7 @@ class UserModelAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ["wide"],
-                "fields": ["email", "name", "tc", "is_admin", "date_of_birth", "password1", "password2"],
+                "fields": ["email", "is_admin", "password1", "password2"],
             },
         ),
     ]
