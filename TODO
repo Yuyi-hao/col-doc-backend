@@ -20,3 +20,17 @@
 ## Issue 
 - [ ] jwt logout issue
 - [ ] email sending issue 
+- [ ] share with groups
+- [ ] doc model need to be review
+
+# TOOD
+- [ ] document creation -> need to find a way to initialize documents with initial data
+- [ ] document edit -> save the data
+- [ ] document share -> need to make request app first
+- [x] document view 
+- [x] document delete
+- [x] remove a person from shared list
+- [x] mark as public
+- [x] mark as private
+- [x] public reading point
+- [x] share list of docs
