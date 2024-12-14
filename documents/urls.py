@@ -14,7 +14,7 @@ urlpatterns = [
 
     # document share
     path('me/<uuid:document_slug>/request', views.doc_share_request, name='doc-share-request'),
-    path('me/<uuid:document_slug>/remove_person', views.remove_person_from_share_list, name='remove-person-from-share-list'),
+    path('me/<uuid:document_slug>/remove_person', views.modify_document_permission , name='remove-person-from-share-list'),
 
     # permission on docs
     path('me/<uuid:document_slug>/mark_public_or_private', views.mark_doc_public_or_private, name='mark-doc-public-or-private'),
