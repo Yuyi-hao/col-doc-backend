@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # apps
     'accounts',
     'documents',
+    'notifications',
 ]
 
 MIDDLEWARE = [

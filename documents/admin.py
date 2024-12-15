@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Document, Permission
+from .models import Document, Permission, DocumentRequest
 
 # Register Document model
 class DocumentAdmin(admin.ModelAdmin):
@@ -15,3 +15,4 @@ class PermissionAdmin(admin.ModelAdmin):
     search_fields = ('document__title', 'user__email')  
 
 admin.site.register(Permission, PermissionAdmin)
+admin.site.register(DocumentRequest)

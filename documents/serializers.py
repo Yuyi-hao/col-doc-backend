@@ -1,15 +1,21 @@
 from rest_framework import serializers
-from .models import Document, Permission
+from .models import Document, Permission, DocumentRequest
 from accounts.models import User
 class PublicDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ['title', 'content', 'cover_image', 'created_at', 'modified_at']
+        fields = ['title', 'content', 'cover_image', 'created_at', 'modified_at', 'slug']
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = "__all__"
+class SharedDocumentSerializer(serializers.ModelSerializer):
+    role = serializers.CharField()
+    class Meta:
+        model = Document
+        fields = ['title', 'content', 'cover_image', 'created_at', 'modified_at', 'slug', 'role']
+
 
 class MarkPublicPrivateSerializer(serializers.Serializer):
     PERMISSION_CHOICES = ("public", "private")
@@ -50,4 +56,10 @@ class EditDocumentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("At least one field must be provided.")
         return attrs
 
+class RequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentRequest
+        fields='__all__'
 
+class DocumentRequestResponseSerializer(serializers.Serializer):
+    response = serializers.ChoiceField(choices=DocumentRequest.RESPONSE_CHOICES)

@@ -36,3 +36,24 @@ class Permission(models.Model):
     class Meta:
         unique_together = ('document', 'user')
 
+
+class DocumentRequest(models.Model):
+    RESPONSE_CHOICES = [
+        ('declined', 'declined'),
+        ('accepted', 'accepted')
+    ]
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_sender')
+    recipient  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_recipient')
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='requested_document')
+    role = models.CharField(max_length=50, choices=Permission.PERMISSION_CHOICES)
+    slug = models.UUIDField(uuid.uuid4)
+
+    # response fields
+    response = models.CharField(max_length=50, choices=RESPONSE_CHOICES, null=True, blank=True)
+
+    # auto field
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
+    modified_at = models.DateTimeField(auto_now=True, editable=False, db_index=True)
+
+    class Meta:
+        unique_together = ('sender', 'document', 'role')
