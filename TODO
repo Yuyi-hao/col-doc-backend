@@ -5,50 +5,48 @@
 - [x] add `corsheaders` app ad do as said in docs
   - [x] add to app
   - [x] add allowed host
-  - [x] add middleware 
+  - [x] add middleware
 - [x] make custom model
 
 
-## check points 
-- [x] Auth 
+## check points
+- [x] Auth
 - [x] Profile
 - [ ] Profile pic
-- [ ] Docs 
-- [ ] 
+- [ ] Docs
+- [ ]
 
 
-## Issue 
+## Issue
 - [ ] jwt logout issue
-- [ ] email sending issue 
+- [ ] email sending issue
 - [ ] share with groups
 - [ ] doc model need to be review
 - [ ] Redesign endpoints for `documents` app
-- [ ] profile pic 
+- [ ] profile pic
 - [ ] cover image for document
 
 # TOOD
 ## Notification
 
-## Request 
+## Request
 
 ## Document
 
-
-
-# Completed 
+# Completed
 - [x] Get all notifications
-- [x] notification creation 
+- [x] notification creation
 - [x] fetch all document for the user
 - [x] List request
 - [x] delete request
 - [x] Make request
 - [x] deny/accept request
-- [x] modify document permission -> assigning permission is pending  
+- [x] modify document permission -> assigning permission is pending
 - [x] document share -> need to make request app first
 - [x] mark as public
 - [x] mark as private
 - [x] document delete
-- [x] document view 
+- [x] document view
 - [x] document creation
 - [x] document edit -> save the data
 - [x] share list of docs
