@@ -35,6 +35,7 @@ class Permission(models.Model):
 
     class Meta:
         unique_together = ('document', 'user')
+        db_table='document_shared_request'
 
 
 class DocumentRequest(models.Model):
