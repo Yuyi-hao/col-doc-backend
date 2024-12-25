@@ -1,3 +1,4 @@
+from django.db.models import F
 from accounts.models import User
 from django.db import transaction, IntegrityError
 from .models import Document, Permission, DocumentRequest
@@ -35,7 +36,7 @@ def read_public_doc(request, document_slug):
 def get_documents(request):
     try:
         document_owned = Document.objects.filter(owner=request.user)
-        document_shared = Document.objects.filter(permission__user=request.user).select_related('permission')
+        document_shared = document_shared = Document.objects.filter(permission_document__user=request.user).annotate(role=F('permission_document__role'))
     except ObjectDoesNotExist:
         return response(
             success = False,
@@ -161,12 +162,12 @@ def delete_doc(request, document_slug):
         )
     document.delete()
     return response(
+        message='Deleted successfully',
         success=True,
         code='document-deleted-successfully',
         status_code=status.HTTP_204_NO_CONTENT
     )
 
-# TODO: as it requires request app
 @api_view(['POST'])
 @permission_classes([IsAuthenticated,])
 def doc_share_request_reply(request, request_slug):
@@ -201,7 +202,7 @@ def doc_share_request_reply(request, request_slug):
                 # Create permission
                 Permission.objects.create(
                     document=document_request.document,
-                    user=document_request.sender,
+                    user=document_request.recipient,
                     role=document_request.role
                 )
                 document_request.response = 'accepted'
@@ -233,7 +234,7 @@ def doc_share_request_reply(request, request_slug):
         content=content
     )
 
-# TODO: need to do it 
+# FIXME: multiple request
 @api_view(['POST'])
 @permission_classes([IsAuthenticated,])
 def modify_document_permission (request, document_slug):
@@ -247,8 +248,8 @@ def modify_document_permission (request, document_slug):
             status_code = status.HTTP_404_NOT_FOUND,
         )
     
-    serialize = serializers.RemovePersonSerializer(data=request.data)
-    if not serialize.is_valid():
+    serialize = serializers.ModifiedPermissionSerializer(data=request.data)
+    if not serialize.is_valid(raise_exception=True):
         return response(
             success = False,
             message = "Incorrect data",
@@ -274,10 +275,10 @@ def modify_document_permission (request, document_slug):
                     notification_text=f"{request.user} requested you for {document} as {role}."
 
                 )
-        except IntegrityError:
+        except IntegrityError as e:
             return response(
                 success = False,
-                message = "Failed to create request",
+                message = f"Failed to create request {e}",
                 code = "request-failed",
                 status_code = status.HTTP_404_NOT_FOUND,
             )
@@ -412,11 +413,11 @@ def list_requests(request):
     all_requests_receive = DocumentRequest.objects.filter(recipient=request.user)
     return response(
         message='Requests fetched successfully',
-        status="request-fetch-successfully",
+        code="request-fetch-successfully",
         status_code=status.HTTP_200_OK,
         content={
-            'all_requests_sent': serializers.RequestSerializer(data=all_requests_sent, many=True).data,
-            'all_requests_receive': serializers.RequestSerializer(data=all_requests_receive, many=True).data,
+            'requests_sent': serializers.RequestSerializer(all_requests_sent, many=True).data,
+            'requests_receive': serializers.RequestSerializer(all_requests_receive, many=True).data,
         }
     )
 
@@ -434,6 +435,7 @@ def delete_requests(request, request_slug):
         )
     document_request.delete()
     return response(
+        message="Request deleted successfully.",
         success=True,
         code='request-deleted-successfully',
         status_code=status.HTTP_204_NO_CONTENT

@@ -9,4 +9,5 @@ urlpatterns = [
     path('password-change/', views.change_password_user , name='user-password-change'),
     path('password-reset-request/', views.send_password_reset_email_user , name='user-password-reset-request'),
     path('reset-password/<uid>/<token>/', views.password_reset_user , name='user-password-reset'),
+    path('token/refresh/', views.access_from_refresh, name='refresh-access-token')
 ]

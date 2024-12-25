@@ -35,7 +35,6 @@ class Permission(models.Model):
 
     class Meta:
         unique_together = ('document', 'user')
-        db_table='document_shared_request'
 
 
 class DocumentRequest(models.Model):
@@ -47,7 +46,7 @@ class DocumentRequest(models.Model):
     recipient  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_recipient')
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='requested_document')
     role = models.CharField(max_length=50, choices=Permission.PERMISSION_CHOICES)
-    slug = models.UUIDField(uuid.uuid4)
+    slug = models.UUIDField(default=uuid.uuid4)
 
     # response fields
     response = models.CharField(max_length=50, choices=RESPONSE_CHOICES, null=True, blank=True)
@@ -57,4 +56,4 @@ class DocumentRequest(models.Model):
     modified_at = models.DateTimeField(auto_now=True, editable=False, db_index=True)
 
     class Meta:
-        unique_together = ('sender', 'document', 'role')
+        db_table='documents_shared_request'

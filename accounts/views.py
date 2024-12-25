@@ -7,6 +7,7 @@ from .serializers import SendPasswordResetEmailSerializer, UserChangePasswordSer
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from core.utils import send_email
+from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(['POST'])
 def register_user(request):
@@ -273,4 +274,28 @@ def password_reset_user(request, uid, token):
         success=True,
         code="password-change-successfully", 
         status_code = status.HTTP_200_OK
+    )
+
+
+@api_view(["POST"])
+def access_from_refresh(request):
+    refresh_token = request.data.get('refresh_token')
+    try:
+        refresh = RefreshToken(refresh_token)
+        access_token = str(refresh.access_token)
+    except Exception as e:
+        return response(
+            message='Invalid token',
+            code='refresh-token-invalid',
+            status_code=status.HTTP_400_BAD_REQUEST,
+            success=False
+        )
+    
+    return response(
+        message='access token',
+        code='access-token',
+        status_code=status.HTTP_200_OK,
+        content={
+            'access_token': access_token
+        }
     )
