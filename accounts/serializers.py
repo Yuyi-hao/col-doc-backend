@@ -31,7 +31,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ['password']
+        exclude = ['password', 'is_admin', 'is_active']
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:

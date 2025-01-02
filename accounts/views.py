@@ -2,6 +2,7 @@ from core.utils import response, get_tokens_for_user
 from django.utils import timezone
 from rest_framework import status
 from .models import User
+from documents.models import Document, Permission
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import SendPasswordResetEmailSerializer, UserChangePasswordSerializer, UserLogoutSerializer, UserPasswordResetSerializer, UserRegisterSerializer, UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from django.contrib.auth import authenticate
@@ -100,7 +101,6 @@ def login_user(request):
             success=True,
             status_code=status.HTTP_200_OK,
             content={
-                'user': UserSerializer(user).data,
                 'access_token': access_token,
                 'refresh_token': refresh_token
             },
@@ -120,12 +120,17 @@ def login_user(request):
 def profile_user(request):
     user = request.user
     if request.method == 'GET':
+        # TODO: count of docs
+        owned_docs = Document.objects.filter(owner=user).count()
+        shared_docs = Permission.objects.filter(user=user).count()
         return response(
             message='user-fetched-successfully',
             success=True,
             status_code=status.HTTP_200_OK,
             content={
                 'user': UserSerializer(request.user).data,
+                'owned_docs': owned_docs,
+                'shared_docs': shared_docs,
             }
         )
     elif request.method == "PUT":
