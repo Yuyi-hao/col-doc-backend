@@ -1,0 +1,467 @@
+{
+	"info": {
+		"_postman_id": "a83b2b29-ce2c-4eab-89d7-bdea4cb347b2",
+		"name": "collab-jam",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36531896"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Notification",
+					"item": [
+						{
+							"name": "Notifications",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{url}}/notifications/notifications"
+							},
+							"response": []
+						},
+						{
+							"name": "Mark notification read",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{url}}/notifications/notifications/{{notification_id}}/mark/"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete notification",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{url}}/notifications/notifications/{{notification_id}}/delete/"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var res = pm.response.json();\r",
+											"pm.environment.set(\"token\", res.content.access_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"yuyihao001@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/accounts/login/"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\": \"12345\",\r\n    \"password2\": \"12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/accounts/reset-password/MTU/chudbm-1e9f5cb13452ebd4cc47233a912ea4a8/"
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{url}}/accounts/logout/"
+							},
+							"response": []
+						},
+						{
+							"name": "signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"yuyihao002@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"password2\": \"12345678\",\r\n    \"name\": \"new\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/accounts/register/"
+							},
+							"response": []
+						},
+						{
+							"name": "change password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": "{{url}}/accounts/password-change/"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password Request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"yuyihao002@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/accounts/password-reset-request/"
+							},
+							"response": []
+						},
+						{
+							"name": "Access Token from refresh token",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTEzNjEyMywiaWF0IjoxNzM1MDQ5NzIzLCJqdGkiOiJmMDMxYjVlOTY4MGY0Y2Q1YjUxNmMwZDYzZDU1NTRjMSIsInVzZXJfaWQiOjN9.TC3h0GTz9v7rG33_VBiLw3wJfCF5hn0ctAwx7IIII98\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/accounts/token/refresh/"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{url}}/accounts/me"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"jhon\",\r\n    \"nickname\":\"jhon carter\",\r\n    \"profile_pic\":\"NOT IMPLEMENTED YET\",\r\n    \"description\":\"This is a random person\",\r\n    \"location\":\"china\",\r\n    \"date_of_birth\":\"2003-12-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/accounts/me"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Document",
+			"item": [
+				{
+					"name": "Public Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/documents/public/{{document_slug}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/documents"
+					},
+					"response": []
+				},
+				{
+					"name": "View Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/view"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Documents",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/create/"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Documents",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"first docs\",\r\n    \"content\": \"This is sample content\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/documents/me/{{document_slug}}/edit/"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Documents",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/delete/"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark doc public or private",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/mark_public_or_private/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "remove person",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/remove_person/"
+					},
+					"response": []
+				},
+				{
+					"name": "modify permissions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/remove_person/"
+					},
+					"response": []
+				},
+				{
+					"name": "reply to request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/request/{{request_slug}}/reply/"
+					},
+					"response": []
+				},
+				{
+					"name": "delete request",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/requests/{{request_slug}}/delete/"
+					},
+					"response": []
+				},
+				{
+					"name": "Share list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/{{document_slug}}/share_list"
+					},
+					"response": []
+				},
+				{
+					"name": "Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{url}}/documents/me/requests"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
